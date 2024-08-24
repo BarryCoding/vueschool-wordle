@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { VICTORY_MESSAGE, DEFEAT_MESSAGE } from '@/settings'
+import letters from '@/fiveLetterWords.json'
 import { computed, ref } from 'vue'
-defineProps<{
-  wordOfTheDay: string
-}>()
+defineProps({
+  wordOfTheDay: {
+    type: String,
+    validator: (word: string) => letters.includes(word)
+  }
+})
 
 const guessInProgress = ref('')
 const guessSubmitted = ref('')

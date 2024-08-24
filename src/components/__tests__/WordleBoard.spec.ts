@@ -7,11 +7,7 @@ describe('WordleBoard', () => {
   let wrapper: ReturnType<typeof mount>
 
   beforeEach(() => {
-    wrapper = mount(WordleBoard, {
-      props: {
-        wordOfTheDay
-      }
-    })
+    wrapper = mount(WordleBoard, { props: { wordOfTheDay } })
   })
 
   async function playerSubmitsGuess(guess: string) {
@@ -33,5 +29,29 @@ describe('WordleBoard', () => {
   test('no end-of-game message appears if the user has not yet made a guess', () => {
     expect(wrapper.text()).not.toContain(VICTORY_MESSAGE)
     expect(wrapper.text()).not.toContain(DEFEAT_MESSAGE)
+  })
+
+  test('If a word of the day provided does not have exactly 5 characters, a warning is emitted', () => {
+    console.warn = vi.fn()
+    mount(WordleBoard, { props: { wordOfTheDay: 'FOUR' } })
+    expect(console.warn).toHaveBeenCalled()
+  })
+
+  test('if the word of the day is not all in uppercase, a warning is emitted', () => {
+    console.warn = vi.fn()
+    mount(WordleBoard, { props: { wordOfTheDay: 'tests' } })
+    expect(console.warn).toHaveBeenCalled()
+  })
+
+  test('if the word of the day is not a real English word, a warning is emitted', () => {
+    console.warn = vi.fn()
+    mount(WordleBoard, { props: { wordOfTheDay: 'ABCDE' } })
+    expect(console.warn).toHaveBeenCalled()
+  })
+
+  test('no warning is emitted if the word of the day provided is a real uppercase English word with 5 characters', () => {
+    console.warn = vi.fn()
+    mount(WordleBoard, { props: { wordOfTheDay: 'RIGHT' } })
+    expect(console.warn).not.toHaveBeenCalled()
   })
 })
